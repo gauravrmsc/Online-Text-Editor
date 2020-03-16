@@ -1,0 +1,129 @@
+
+package com.crio.qcharm.ide;
+
+import com.crio.qcharm.ds.CopyBuffer;
+import com.crio.qcharm.ds.Cursor;
+import com.crio.qcharm.ds.FileInfo;
+import com.crio.qcharm.ds.Page;
+import com.crio.qcharm.ds.RunCodeArgs;
+import com.crio.qcharm.ds.RunCodeOutput;
+import com.crio.qcharm.ds.SourceFileHandler;
+import com.crio.qcharm.ds.SourceFileHandlerArrayListImpl;
+import com.crio.qcharm.request.EditRequest;
+import com.crio.qcharm.request.MasterRequest;
+import com.crio.qcharm.request.PageRequest;
+import com.crio.qcharm.request.SearchReplaceRequest;
+import com.crio.qcharm.runner.BaseRunner;
+import com.crio.qcharm.runner.CRunner;
+import com.crio.qcharm.runner.CppRunner;
+import com.crio.qcharm.runner.JavaRunner;
+import com.crio.qcharm.runner.PythonRunner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("qcharm")
+public class QCharmController {
+  SourceFileHandler sourceFileHandler =
+      new SourceFileHandlerArrayListImpl("fileName");
+
+  @PostMapping("/get_prev_lines_new")
+  @ResponseBody
+  public Object getPrevLinesNew(@RequestBody MasterRequest masterRequest) {
+    Page prevPage = sourceFileHandler.getPrevLines(masterRequest.getPageRequest());
+    return new ResponseEntity<>(prevPage, HttpStatus.OK);
+  }
+
+  @PostMapping("/get_next_lines_new")
+  @ResponseBody
+  public Object getNextLinesNew(@RequestBody MasterRequest masterRequest) {
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+    Page prevPage = sourceFileHandler.getNextLines(masterRequest.getPageRequest());
+    return new ResponseEntity<>(prevPage, HttpStatus.OK);
+  }
+
+  @PostMapping("/load_file_new")
+  @ResponseBody
+  public Object loadFileNew(@RequestBody MasterRequest masterRequest) {
+    FileInfo fileInfo = masterRequest.getFileInfo();
+    Page page = sourceFileHandler.loadFile(fileInfo);
+    return new ResponseEntity<>(page, HttpStatus.OK);
+  }
+
+  @PostMapping("/jump_new")
+  @ResponseBody
+  public Object getLinesNew(@RequestBody MasterRequest masterRequest) {
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+    Page page = sourceFileHandler.getLinesFrom(masterRequest.getPageRequest());
+    return new ResponseEntity<>(page, HttpStatus.OK);
+  }
+
+
+
+
+
+
+  @PostMapping("/run_file")
+  @ResponseBody
+  public RunCodeOutput execute(@RequestBody RunCodeArgs runCodeArgs) throws Exception {
+    System.out.println("Called run-file");
+
+    List<String> allLines = sourceFileHandler
+        .getLatestSourceFileVersion(runCodeArgs.getFileName()).getAllLines();
+    runCodeArgs.setLines(allLines);
+    return runCode(runCodeArgs);
+  }
+
+  @PostMapping("/run_file_internal")
+  public RunCodeOutput runCode(@RequestBody RunCodeArgs runCodeArgs) throws Exception {
+    List<String> filesToDelete = new ArrayList<>();
+    String fileName = runCodeArgs.getFileName();
+    try {
+      filesToDelete.add(fileName);
+      FileWriter writer = new FileWriter(fileName, false);
+      for (String line : runCodeArgs.getLines()) {
+        writer.write(line + "\n");
+      }
+      writer.flush();
+      writer.close();
+
+      BaseRunner runner = getRunner(runCodeArgs.getLanguage());
+      return runner.runProgram(filesToDelete, fileName, runCodeArgs.getInputs());
+
+    } finally {
+      for (String file : filesToDelete) {
+        Files.deleteIfExists(new File(file).toPath());
+      }
+    }
+  }
+
+  private BaseRunner getRunner(String language) {
+    if (language.equalsIgnoreCase("java")) {
+       return new JavaRunner();
+    }
+    if (language.equalsIgnoreCase("python")) {
+      return  new PythonRunner();
+    }
+    if (language.equalsIgnoreCase("c++")) {
+      return  new CppRunner();
+    }
+    if (language.equalsIgnoreCase("c")) {
+      return  new CRunner();
+    }
+    return null;
+  }
+}
