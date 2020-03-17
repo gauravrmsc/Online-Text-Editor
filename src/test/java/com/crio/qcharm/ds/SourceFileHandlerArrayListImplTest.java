@@ -106,7 +106,7 @@ class SourceFileHandlerArrayListImplTest {
     FileInfo fileInfo = getSampleFileInfo();
     Page page = sourceFileHandlerArrayListImpl.loadFile(fileInfo);
 
-    assertEquals(page.getLines(), fileInfo.getLines());
+    assertEquals(fileInfo.getLines(), page.getLines());
   }
 
   private SourceFileHandlerArrayListImpl getSourceFileHandlerArrayList(String testfile) {
@@ -119,7 +119,7 @@ class SourceFileHandlerArrayListImplTest {
 
     FileInfo fileInfo = getLargeSampleFileInfo("largeFile", 1000000);
     Page page = sourceFileHandlerArrayListImpl.loadFile(fileInfo);
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, 50));
+    assertEquals(fileInfo.getLines().subList(0, 50), page.getLines());
   }
 
   @Test
@@ -136,7 +136,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(startingLineNo, fileName, length, cursor);
     Page emptyPage = sourceFileHandlerArrayListImpl.getNextLines(pageRequest);
 
-    assertEquals(emptyPage.getLines(), new ArrayList<String>());
+    assertEquals(new ArrayList<String>(), emptyPage.getLines());
   }
 
   @Test
@@ -154,7 +154,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandlerArrayListImpl.getNextLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(startingLine+1, 100));
+    assertEquals(fileInfo.getLines().subList(startingLine+1, 100), page.getLines());
   }
 
   @Test
@@ -172,7 +172,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, length));
+    assertEquals(fileInfo.getLines().subList(0, length), page.getLines());
   }
 
   @Test
@@ -188,7 +188,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(0, fileName, length, cursor);
     Page emptyPage = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
 
-    assertEquals(emptyPage.getLines(), new ArrayList<String>());
+    assertEquals(new ArrayList<String>(), emptyPage.getLines());
   }
 
   @Test
@@ -206,7 +206,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, 10));
+    assertEquals(fileInfo.getLines().subList(0, 10), page.getLines());
   }
 
   @Test
@@ -224,7 +224,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, length));
+    assertEquals(fileInfo.getLines().subList(0, length), page.getLines());
   }
 
   @Test
@@ -310,9 +310,9 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequest = new PageRequest(0, fileName, N, new Cursor(0,0));
     Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
 
-    assertEquals(page.getLines().subList(0,35), fileInfo.getLines().subList(0, 35));
-    assertEquals(page.getLines().subList(35, 70), changedLines);
-    assertEquals(page.getLines().subList(70,N), fileInfo.getLines().subList(70, N));
+    assertEquals(fileInfo.getLines().subList(0, 35), page.getLines().subList(0,35));
+    assertEquals(changedLines, page.getLines().subList(35, 70));
+    assertEquals(fileInfo.getLines().subList(70, N), page.getLines().subList(70,N));
   }
 
 
