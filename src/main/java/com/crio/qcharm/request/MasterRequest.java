@@ -31,7 +31,7 @@
     String pattern;
     String newPattern;
 
-    static final String splitter = "\\r?\\n";
+    static final String splitter = "\\n";
 
     public MasterRequest() {
     }
@@ -46,7 +46,7 @@
     }
 
     public PageRequest getPageRequestPostEdit() {
-      String[] lines = dataNow.split(splitter);
+      String[] lines = dataNow.split(splitter, -1);
       return new PageRequest(startingLineNo, fileName, lines.length, cursorStart);
     }
 
@@ -55,14 +55,14 @@
     }
 
     public FileInfo getFileInfo() {
-      String[] lines = dataNow.split(splitter);
+      String[] lines = dataNow.split(splitter, -1);
       System.out.printf("lines len = %d\n", lines.length);
       System.out.println(dataNow);
       return new FileInfo(fileName, Arrays.asList(lines));
     }
 
     public EditRequest getEditRequest() {
-      String[] lines = dataNow.split(splitter);
+      String[] lines = dataNow.split(splitter, -1);
       return new EditRequest(startingLineNo, endingLineNo, Arrays.asList(lines), fileName, cursorStart);
     }
 
@@ -71,8 +71,8 @@
       String part2 = dataNow.substring(start, end);
       String part3 = dataNow.substring(end);
       String rest = part1 + part3;
-      List<String> restOfData = Arrays.asList(rest.split(splitter));
-      CopyBuffer copyBuffer = new CopyBuffer(Arrays.asList(part2.split(splitter)));
+      List<String> restOfData = Arrays.asList(rest.split(splitter, -1));
+      CopyBuffer copyBuffer = new CopyBuffer(Arrays.asList(part2.split(splitter, -1)));
       return Pair.of(copyBuffer, restOfData);
     }
 
