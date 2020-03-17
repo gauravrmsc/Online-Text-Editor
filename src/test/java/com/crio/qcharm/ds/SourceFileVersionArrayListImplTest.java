@@ -50,7 +50,7 @@ class SourceFileVersionArrayListImplTest {
 
     List<String> linesReceived = SourceFileVersion.getAllLines();
 
-    assertEquals(linesReceived, fileInfo.getLines());
+    assertEquals(fileInfo.getLines(), linesReceived);
   }
 
   @Test
@@ -66,8 +66,8 @@ class SourceFileVersionArrayListImplTest {
 
     Page linesBefore = SourceFileVersion.getLinesBefore(pageRequest);
 
-    assertEquals(linesBefore.getLines(), fileInfo.getLines().subList(0, 10));
-    assertEquals(linesBefore.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(0, 10), linesBefore.getLines());
+    assertEquals(cursorAt, linesBefore.getCursorAt());
   }
 
   @Test
@@ -82,8 +82,8 @@ class SourceFileVersionArrayListImplTest {
     PageRequest pageRequest = new PageRequest(0, fileName, 25, cursorAt);
     Page linesBefore = SourceFileVersion.getLinesBefore(pageRequest);
 
-    assertEquals(linesBefore.getLines().size(), 0);
-    assertEquals(linesBefore.getCursorAt(), cursorAt);
+    assertEquals(0, linesBefore.getLines().size());
+    assertEquals(cursorAt, linesBefore.getCursorAt());
   }
 
   @Test
@@ -98,8 +98,8 @@ class SourceFileVersionArrayListImplTest {
     PageRequest pageRequest = new PageRequest(10, fileName, 25, cursorAt);
     Page linesBefore = SourceFileVersion.getLinesAfter(pageRequest);
 
-    assertEquals(linesBefore.getLines(), fileInfo.getLines().subList(11, 11+25));
-    assertEquals(linesBefore.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(11, 11+25), linesBefore.getLines());
+    assertEquals(cursorAt, linesBefore.getCursorAt());
   }
 
   @Test
@@ -114,8 +114,8 @@ class SourceFileVersionArrayListImplTest {
     PageRequest pageRequest = new PageRequest(60, fileName, 25, cursorAt);
     Page linesFrom = SourceFileVersion.getLinesFrom(pageRequest);
 
-    assertEquals(linesFrom.getLines(), fileInfo.getLines().subList(60, 73));
-    assertEquals(linesFrom.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(60, 73), linesFrom.getLines());
+    assertEquals(cursorAt, linesFrom.getCursorAt());
   }
 
   @Test
@@ -130,8 +130,8 @@ class SourceFileVersionArrayListImplTest {
     PageRequest pageRequest = new PageRequest(10, fileName, 25, cursorAt);
     Page linesFrom = SourceFileVersion.getLinesFrom(pageRequest);
 
-    assertEquals(linesFrom.getLines(), fileInfo.getLines().subList(10, 10+25));
-    assertEquals(linesFrom.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(10, 10+25), linesFrom.getLines());
+    assertEquals(cursorAt, linesFrom.getCursorAt());
   }
 
 
