@@ -65,7 +65,7 @@ class SourceFileHandlerArrayListImplTest {
 
     List<String> lines = new ArrayList<>();
 
-    int N = 10000;
+    int N = 1000;
 
     String s1 = buffer1.toString();
     for (int i = 0; i < N; ++i) {
@@ -254,13 +254,16 @@ class SourceFileHandlerArrayListImplTest {
 
     sourceFileHandlerArrayListImpl.loadFile(inefficientSearch);
     SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
-    long startTime = System.currentTimeMillis();
-    List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequest);
-    long timeTakenInMs = System.currentTimeMillis() -  startTime;
-
-    assertEquals(expectedCursorPositions, cursors);
+    long timeTakenInMs = 0;
+    System.currentTimeMillis();
+    for (int i = 0; i < 10; ++i) {
+      long startTime = System.currentTimeMillis();
+      List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequest);
+      timeTakenInMs += System.currentTimeMillis() - startTime;
+      assertEquals(expectedCursorPositions, cursors);
+    }
     System.out.println(timeTakenInMs);
-    assert (timeTakenInMs < 1500);
+    assert (timeTakenInMs < 2000);
   }
 
   @Test
