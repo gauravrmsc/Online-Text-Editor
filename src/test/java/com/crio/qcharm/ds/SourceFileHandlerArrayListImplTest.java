@@ -65,7 +65,7 @@ class SourceFileHandlerArrayListImplTest {
 
     List<String> lines = new ArrayList<>();
 
-    int N = 10000;
+    int N = 1000;
 
     String s1 = buffer1.toString();
     for (int i = 0; i < N; ++i) {
