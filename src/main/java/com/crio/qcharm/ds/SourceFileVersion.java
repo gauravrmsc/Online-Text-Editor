@@ -15,14 +15,6 @@ public interface SourceFileVersion {
 
   Page getLinesFrom(PageRequest pageRequest);
 
-  //TODO:
-  // You are given searchPattern return.
-  // Return starting cursorAt position for all string occurance
-
-
-  //TODO:
-  // You are given searchPattern and replacePattern.
-  // Replace every occurance for searchPattern by replacePattern
 
 
 }
