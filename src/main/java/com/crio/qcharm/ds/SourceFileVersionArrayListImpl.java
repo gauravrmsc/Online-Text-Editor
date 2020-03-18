@@ -57,7 +57,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   // Example:
   //        UpdateLines looks like this
   //            1. start line no - 50
-  //            2. length - 10
+  //            2. numberOfLines - 10
   //            3. lines - ["Hello world"]
   //
   //       Assume the file has 100 lines in it
@@ -84,6 +84,8 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   //          ....
   //        line no 99
   //
+
+
 
   @Override
   public void apply(UpdateLines updateLines) {
