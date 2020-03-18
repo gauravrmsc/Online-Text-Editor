@@ -1,6 +1,7 @@
 __CRIO__/metadata.json merge=copy-merge
 settings.gradle merge=copy-merge
 build.gradle merge=copy-merge
+gradlew merge=copy-merge
 src/test/java/com/crio/qcharm/request/MasterRequestTest.java merge=copy-merge
 src/test/java/com/crio/qcharm/ide/QCharmControllerTest.java merge=copy-merge
 src/test/java/com/crio/qcharm/ds/SourceFileVersionLinkedListImplTest.java merge=copy-merge
