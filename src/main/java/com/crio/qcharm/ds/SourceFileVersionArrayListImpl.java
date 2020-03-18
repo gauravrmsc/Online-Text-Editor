@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SourceFileVersionArrayListImpl implements SourceFileVersion {
-
+  String fileName;
+  List<String> lines;
 
   public SourceFileVersionArrayListImpl(SourceFileVersionArrayListImpl obj) {
+    
   }
 
 
@@ -33,6 +35,8 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   //     1. Use Java ArrayList to store the lines received from fileInfo
 
   public SourceFileVersionArrayListImpl(FileInfo fileInfo) {
+    this.fileName = fileInfo.fileName;
+    this.lines = fileInfo.lines;
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
@@ -58,7 +62,11 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   public Page getLinesBefore(PageRequest pageRequest) {
     int lineNumber = pageRequest.getStartingLineNo();
     int numberOfLines = pageRequest.getNumberOfLines();
-
+    int startPointer = lineNumber-numberOfLines;
+    int start = (startPointer >=0 ) ? (startPointer) : 0;
+    List<String> retLines = this.lines.subList(start,lineNumber);
+    Page page = new Page(retLines,start,fileName,pageRequest.getCursorAt());
+    return page;
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
@@ -83,7 +91,13 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   public Page getLinesAfter(PageRequest pageRequest) {
     int lineNumber = pageRequest.getStartingLineNo();
     int numberOfLines = pageRequest.getNumberOfLines();
-
+    int endPointer = lineNumber + numberOfLines + 1; 
+    int end = (lines.size() >= (endPointer))?(endPointer):lines.size();
+    List<String> retLines = lines.subList(lineNumber+1,end);
+    int startingLineNo = lineNumber+1;
+    Cursor cursor = pageRequest.getCursorAt();
+    Page page = new Page(retLines,startingLineNo,fileName,cursor);
+    return page;
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
@@ -108,6 +122,13 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   public Page getLinesFrom(PageRequest pageRequest) {
     int lineNumber = pageRequest.getStartingLineNo();
     int numberOfLines = pageRequest.getNumberOfLines();
+    int endPointer = lineNumber + numberOfLines; 
+    int end = (lines.size() >= (endPointer))?(endPointer):lines.size();
+    List<String> retLines = lines.subList(lineNumber,end);
+    int startingLineNo = lineNumber;
+    Cursor cursor = pageRequest.getCursorAt();
+    Page page = new Page(retLines,startingLineNo,fileName,cursor);
+    return page;
   }
 
 
@@ -117,5 +138,6 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
 
   @Override
   public List<String> getAllLines() {
+    return lines;
   }
 }

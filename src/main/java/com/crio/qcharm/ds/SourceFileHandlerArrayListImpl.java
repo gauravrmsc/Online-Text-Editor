@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
-
+  SourceFileVersionArrayListImpl sourceFileVersionArrayListImpl;
 
   public SourceFileHandlerArrayListImpl(String fileName) {
   }
@@ -49,6 +49,13 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
 
   @Override
   public Page loadFile(FileInfo fileInfo) {
+    Cursor cursorAt = new Cursor(0,0);
+    PageRequest pageRequest = new PageRequest(0,fileInfo.getFileName(),50,cursorAt);
+    sourceFileVersionArrayListImpl = 
+        new SourceFileVersionArrayListImpl(fileInfo);
+    Page page = 
+        sourceFileVersionArrayListImpl.getLinesAfter(pageRequest);
+    return page;    
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
@@ -70,6 +77,11 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
 
   @Override
   public Page getPrevLines(PageRequest pageRequest) {
+    //List<String> lines = sourceFileVersionArrayListImpl.lines;
+    Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
+    pageRequest.setCursorAt(cursor);
+    Page page = sourceFileVersionArrayListImpl.getLinesBefore(pageRequest);
+    return page;
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
@@ -91,6 +103,10 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
 
   @Override
   public Page getNextLines(PageRequest pageRequest) {
+    Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
+    pageRequest.setCursorAt(cursor);
+    Page page = sourceFileVersionArrayListImpl.getLinesAfter(pageRequest);
+    return page;
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
@@ -112,6 +128,10 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
 
   @Override
   public Page getLinesFrom(PageRequest pageRequest) {
+    Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
+    pageRequest.setCursorAt(cursor);
+    Page page = sourceFileVersionArrayListImpl.getLinesFrom(pageRequest);
+    return page;
   }
 
 
@@ -126,6 +146,11 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
 
   @Override
   public void editLines(EditRequest editRequest) {
+  }
+
+  @Override
+  public SourceFileVersion getLatestSourceFileVersion(String fileName) {
+    return null;
   }
 
 
