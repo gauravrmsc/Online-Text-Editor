@@ -6,8 +6,8 @@ import com.crio.qcharm.request.PageRequest;
 import com.crio.qcharm.request.SearchReplaceRequest;
 import com.crio.qcharm.request.SearchRequest;
 import com.crio.qcharm.request.UndoRequest;
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.apache.logging.log4j.ThreadContext;
@@ -121,6 +121,8 @@ class SourceFileHandlerArrayListImplTest {
     FileInfo fileInfo = getLargeSampleFileInfo("largeFile", 1000000);
     Page page = sourceFileHandlerArrayListImpl.loadFile(fileInfo);
     assertEquals(fileInfo.getLines().subList(0, 50), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(new Cursor(0,0), page.getCursorAt());
   }
 
   @Test
@@ -138,6 +140,8 @@ class SourceFileHandlerArrayListImplTest {
     Page emptyPage = sourceFileHandlerArrayListImpl.getNextLines(pageRequest);
 
     assertEquals(new ArrayList<String>(), emptyPage.getLines());
+    assertEquals(100, emptyPage.getStartingLineNo());
+    assertEquals(cursor, emptyPage.getCursorAt());
   }
 
   @Test
@@ -156,10 +160,12 @@ class SourceFileHandlerArrayListImplTest {
     Page page = sourceFileHandlerArrayListImpl.getNextLines(pageRequest);
 
     assertEquals(fileInfo.getLines().subList(startingLine+1, 100), page.getLines());
+    assertEquals(startingLine+1, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
-  void getNextLinesReturnsRequestedNumberOfLines() {
+  void getPrevLinesReturnsRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
 
@@ -174,6 +180,8 @@ class SourceFileHandlerArrayListImplTest {
     Page page = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
 
     assertEquals(fileInfo.getLines().subList(0, length), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -208,10 +216,12 @@ class SourceFileHandlerArrayListImplTest {
     Page page = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
 
     assertEquals(fileInfo.getLines().subList(0, 10), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
-  void getPrevLinesReturnsRequestedNumberOfLines() {
+  void getNextLinesReturnsRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
 
@@ -223,9 +233,11 @@ class SourceFileHandlerArrayListImplTest {
 
     Cursor cursor = new Cursor(0, 0);
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
-    Page page = sourceFileHandlerArrayListImpl.getPrevLines(pageRequest);
+    Page page = sourceFileHandlerArrayListImpl.getNextLines(pageRequest);
 
-    assertEquals(fileInfo.getLines().subList(0, length), page.getLines());
+    assertEquals(fileInfo.getLines().subList(36, 71), page.getLines());
+    assertEquals(36, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -246,25 +258,25 @@ class SourceFileHandlerArrayListImplTest {
     Cursor expectedCursorPosition = new Cursor(startingLine, 0);
     assertEquals(expectedCursorPosition, page.getCursorAt());
     assertEquals(fileInfo.getLines().subList(startingLine, startingLine + length), page.getLines());
+    assertEquals(10, page.getStartingLineNo());
   }
 
   @Test
   void  efficientSearchTest() {
-    String fileName = "testfile";
+    String fileName = "efficientSearchTest";
     SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
 
     sourceFileHandlerArrayListImpl.loadFile(inefficientSearch);
     SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
-    long timeTakenInMs = 0;
-    System.currentTimeMillis();
+    long timeTakenInNs = 0;
     for (int i = 0; i < 10; ++i) {
-      long startTime = System.currentTimeMillis();
+      long startTime = System.nanoTime();
       List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequest);
-      timeTakenInMs += System.currentTimeMillis() - startTime;
+      timeTakenInNs += System.nanoTime() - startTime;
       assertEquals(expectedCursorPositions, cursors);
     }
-    System.out.println(timeTakenInMs);
-    assert (timeTakenInMs < 2000);
+    System.out.println(timeTakenInNs);
+    assert (timeTakenInNs < 1500 * 1000 * 1000);
   }
 
   @Test
