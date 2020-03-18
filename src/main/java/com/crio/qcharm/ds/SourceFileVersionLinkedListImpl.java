@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 
 public class SourceFileVersionLinkedListImpl implements SourceFileVersion {
 
-  List<String> allLines = new LinkedList<>();
-  String fileName;
 
   SourceFileVersionLinkedListImpl(FileInfo fileInfo) {
   }

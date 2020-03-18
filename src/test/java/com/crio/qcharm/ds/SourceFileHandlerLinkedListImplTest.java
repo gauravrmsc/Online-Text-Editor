@@ -7,6 +7,7 @@ import com.crio.qcharm.request.SearchReplaceRequest;
 import com.crio.qcharm.request.SearchRequest;
 import com.crio.qcharm.request.UndoRequest;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -113,7 +114,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(startingLineNo, fileName, length, cursor);
     Page emptyPage = sourceFileHandler.getNextLines(pageRequest);
 
-    assertEquals(emptyPage.getLines(), new ArrayList<String>());
+    assertEquals(new LinkedList<String>(), emptyPage.getLines());
+    assertEquals(100, emptyPage.getStartingLineNo());
+    assertEquals(cursor, emptyPage.getCursorAt());
   }
 
   @Test
@@ -131,7 +134,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandler.getNextLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(startingLine+1, 100));
+    assertEquals(fileInfo.getLines().subList(startingLine+1, 100), page.getLines());
+    assertEquals(startingLine+1, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -149,7 +154,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandler.getPrevLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, length));
+    assertEquals(fileInfo.getLines().subList(0, length), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -165,7 +172,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(0, fileName, length, cursor);
     Page emptyPage = sourceFileHandler.getPrevLines(pageRequest);
 
-    assertEquals(emptyPage.getLines(), new ArrayList<String>());
+    assertEquals(new LinkedList<String>(), emptyPage.getLines());
+    assertEquals(0, emptyPage.getStartingLineNo());
+    assertEquals(cursor, emptyPage.getCursorAt());
   }
 
   @Test
@@ -183,7 +192,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandler.getPrevLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, 10));
+    assertEquals(fileInfo.getLines().subList(0, 10), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -201,7 +212,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandler.getPrevLines(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(0, length));
+    assertEquals(fileInfo.getLines().subList(0, 35), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -219,7 +232,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandler.getLinesFrom(pageRequest);
 
-    assertEquals(page.getLines(), fileInfo.getLines().subList(startingLine, length));
+    assertEquals(fileInfo.getLines().subList(startingLine, length), page.getLines());
+    assertEquals(0, page.getStartingLineNo());
+    assertEquals(cursor, page.getCursorAt());
   }
 
   @Test
@@ -229,16 +244,15 @@ class SourceFileHandlerLinkedListImplTest {
 
     sourceFileHandler.loadFile(inefficientSearch);
     SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
-    long timeTakenInMs = 0;
-    System.currentTimeMillis();
+    long timeInNs = 0;
     for (int i = 0; i < 10; ++i) {
-      long startTime = System.currentTimeMillis();
+      long startTime = System.nanoTime();
       List<Cursor> cursors = sourceFileHandler.search(searchRequest);
-      timeTakenInMs += System.currentTimeMillis() - startTime;
+      timeInNs += System.nanoTime() - startTime;
       assertEquals(expectedCursorPositions, cursors);
     }
-    System.out.println(timeTakenInMs);
-    assert (timeTakenInMs < 2000);
+    System.out.println(timeInNs);
+    assert (timeInNs < 1700 * 1000 * 1000);
   }
 
   @Test
@@ -285,9 +299,9 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(0, fileName, N, new Cursor(0,0));
     Page page = sourceFileHandler.getLinesFrom(pageRequest);
 
-    assertEquals(page.getLines().subList(0,35), fileInfo.getLines().subList(0, 35));
-    assertEquals(page.getLines().subList(35, 70), changedLines);
-    assertEquals(page.getLines().subList(70,N), fileInfo.getLines().subList(70, N));
+    assertEquals(fileInfo.getLines().subList(0, 35), page.getLines().subList(0,35));
+    assertEquals(changedLines, page.getLines().subList(35, 70));
+    assertEquals(fileInfo.getLines().subList(70, N), page.getLines().subList(70,N));
   }
 
 
@@ -313,22 +327,23 @@ class SourceFileHandlerLinkedListImplTest {
     EditRequest editRequest = new EditRequest(0, 0, changedLines, fileName, cursorAt);
     PageRequest pageRequest = new PageRequest(0, fileName, 1, cursorAt);
 
-    long startTime = System.currentTimeMillis();
+    long timeTakenInNs = 0;
     for (int i = 0; i < K; ++i) {
+      long startTime = System.nanoTime();
       sourceFileHandler.editLines(editRequest);
 
       Page pageResponse = sourceFileHandler.getLinesFrom(pageRequest);
+      timeTakenInNs += System.nanoTime() - startTime;
       assertEquals(pageResponse.getLines(), changedLines);
     }
-    long timeTaken = System.currentTimeMillis() - startTime;
-
-    System.out.println(timeTaken);
-    assert(timeTaken < 500);
+    System.out.printf("time take in %d ns\n", timeTakenInNs);
+    assert(timeTakenInNs < 500 * 1000 * 1000);
     PageRequest pageRequestNew = new PageRequest(0, fileName, N + K, cursorAt);
     Page page = sourceFileHandler.getLinesFrom(pageRequestNew);
 
-    assertEquals(page.getLines().subList(K, K + N), fileInfo.getLines());
+    assertEquals(fileInfo.getLines(), page.getLines().subList(K, K + N));
   }
+
 
 
 
