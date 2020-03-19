@@ -98,9 +98,9 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     if (start<lines.size()) {
       retLines = lines.subList(start,end);
     }
-    else {
+    /*else {
       start = lineNumber;
-    }
+    }*/
     Cursor cursor = pageRequest.getCursorAt();
     retLines = new ArrayList<String>();
     Page page = new Page(retLines,start,fileName,cursor);
