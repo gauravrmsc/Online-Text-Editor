@@ -50,7 +50,7 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
   @Override
   public Page loadFile(FileInfo fileInfo) {
     Cursor cursorAt = new Cursor(0,0);
-    PageRequest pageRequest = new PageRequest(0,fileInfo.getFileName(),50,cursorAt);
+    PageRequest pageRequest = new PageRequest(-1,fileInfo.getFileName(),50,cursorAt);
     sourceFileVersionArrayListImpl = 
         new SourceFileVersionArrayListImpl(fileInfo);
     Page page = 

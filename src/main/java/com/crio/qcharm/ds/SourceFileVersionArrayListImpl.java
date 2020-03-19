@@ -92,9 +92,16 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     int lineNumber = pageRequest.getStartingLineNo();
     int numberOfLines = pageRequest.getNumberOfLines();
     int endPointer = lineNumber + numberOfLines + 1; 
+    int start = lineNumber+1;
     int end = (lines.size() >= (endPointer))?(endPointer):lines.size();
-    List<String> retLines = lines.subList(lineNumber+1,end);
-    int startingLineNo = lineNumber+1;
+    List<String> retLines = null;
+    if (start<lines.size()) {
+      retLines = lines.subList(start,end);
+    }
+    else {
+      retLines = new ArrayList<String>();
+    } 
+    int startingLineNo = (lines.size()>=(start))?start:lines.size();
     Cursor cursor = pageRequest.getCursorAt();
     Page page = new Page(retLines,startingLineNo,fileName,cursor);
     return page;
