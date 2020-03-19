@@ -100,6 +100,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     }
     Cursor cursor = pageRequest.getCursorAt();
     retLines = new ArrayList<String>();
+    start = lineNumber;
     Page page = new Page(retLines,start,fileName,cursor);
     return page;
   }
