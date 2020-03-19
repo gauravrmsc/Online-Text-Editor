@@ -78,8 +78,8 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
   @Override
   public Page getPrevLines(PageRequest pageRequest) {
     //List<String> lines = sourceFileVersionArrayListImpl.lines;
-    Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
-    pageRequest.setCursorAt(cursor);
+    //Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
+    //pageRequest.setCursorAt(cursor);
     Page page = sourceFileVersionArrayListImpl.getLinesBefore(pageRequest);
     return page;
   }
@@ -103,8 +103,8 @@ public class SourceFileHandlerArrayListImpl implements SourceFileHandler {
 
   @Override
   public Page getNextLines(PageRequest pageRequest) {
-    Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
-    pageRequest.setCursorAt(cursor);
+    //Cursor cursor = new Cursor(pageRequest.getStartingLineNo(),0);
+    //pageRequest.setCursorAt(cursor);
     Page page = sourceFileVersionArrayListImpl.getLinesAfter(pageRequest);
     return page;
   }
