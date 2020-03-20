@@ -31,13 +31,6 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     return this;
   }
 
-  // TODO: CRIO_TASK_MODULE_CUT_COPY_PASTE
-  // Input:
-  //    SearchReplace
-  //          1. pattern - pattern to be found
-  //          2. newPattern - pattern to be replaced with
-  //  Description:
-  //      Find every occurrence of the pattern and replace it newPattern.
 
   @Override
   public void apply(SearchReplace searchReplace) {
@@ -47,7 +40,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   // TODO: CRIO_TASK_MODULE_CUT_COPY_PASTE
   // Input:
   //     UpdateLines
-  //        1. startingLineNoe - starting line number of last time it received page from backend
+  //        1. startingLineNo - starting line number of last time it received page from backend
   //        2. numberOfLines - number of lines received from backend last time.
   //        3. lines - present view of lines in range(startingLineNo,startingLineNo+numberOfLines)
   //        4. cursor

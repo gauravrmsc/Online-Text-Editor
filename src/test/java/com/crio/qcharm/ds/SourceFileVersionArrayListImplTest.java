@@ -220,38 +220,4 @@ class SourceFileVersionArrayListImplTest {
     assertEquals(lines.get(0), allLines.get(1));
     assertEquals(lines.get(1), allLines.get(2));
   }
-
-
-//  @Test
-//  void undo() {
-//    String fileName = "apply1";
-//    FileInfo fileInfo = getSmallFile(fileName);
-//
-//    List<String> lines = new ArrayList<>();
-//    lines.add("def newSquareFunction(var)");
-//    lines.add("    return var * var;");
-//
-//    Cursor cursor = new Cursor(1,0);
-//
-//    Edits updateLines = new UpdateLines(1, 2, lines, cursor);
-//
-//    SourceFileVersion SourceFileVersion = new SourceFileVersionArrayListImpl(updateLines, fileInfo);
-//
-//    assertEquals(SourceFileVersion.getAllLines(), fileInfo.getLines());
-//
-//    SourceFileVersion.apply();
-//    List<String> allLines = SourceFileVersion.getAllLines();
-//    assertEquals(allLines.get(0), fileInfo.getLines().get(0));
-//    assertEquals(allLines.get(1), lines.get(0));
-//    assertEquals(allLines.get(2), lines.get(1));
-//
-//    Page page = SourceFileVersion.undo();
-//    assertEquals(SourceFileVersion.getAllLines(), fileInfo.getLines());
-//  }
-
-//  @Test
-//  void getFileName() {
-//    FileInfo fileInfo = getSmallFile("DummyFileName");
-//    assertEquals(fileInfo.getFileName(), "DummyFileName");
-//  }
 }
