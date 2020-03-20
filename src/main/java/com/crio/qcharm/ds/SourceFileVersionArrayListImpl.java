@@ -133,7 +133,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     List<String> retLines = lines.subList(lineNumber,end);
     int startingLineNo = lineNumber;
     Cursor cursor = pageRequest.getCursorAt();
-    Page page = new Page(retLines,startingLineNo,fileName,cursor);
+    Page page = new Page(retLines,lineNumber,fileName,cursor);
     return page;
   }
 
