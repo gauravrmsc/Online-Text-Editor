@@ -8,8 +8,12 @@ import com.crio.qcharm.request.SearchRequest;
 import com.crio.qcharm.request.UndoRequest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,6 +47,10 @@ class SourceFileHandlerArrayListImplTest {
 
     pattern = prefix.toString() + "aa";
     patternGenerator(prefix.toString() + "ab", pattern);
+  }
+
+  List<String> clone(List<String> lst) {
+    return lst.stream().collect(Collectors.toList());
   }
 
   @AfterAll
@@ -275,9 +283,12 @@ class SourceFileHandlerArrayListImplTest {
       timeTakenInNs += System.nanoTime() - startTime;
       assertEquals(expectedCursorPositions, cursors);
     }
-    System.out.println(timeTakenInNs);
-    assert (timeTakenInNs < 1500 * 1000 * 1000);
+    System.out.printf("efficientSearchTest timetaken = %d ns\n", timeTakenInNs);
+    assert (timeTakenInNs < 1600000000l);
   }
+
+
+
 
   @Test
   void search() {
