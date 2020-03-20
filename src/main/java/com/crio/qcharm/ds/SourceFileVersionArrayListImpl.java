@@ -161,8 +161,8 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     int position = line.indexOf(pattern);
     Cursor cursor = new Cursor(lineNo,position+startIndex);
     cursorList.add(cursor);
-    //startIndex = position + pattern.length() + 1;
-    startIndex = position +1;
+    startIndex = position + pattern.length() + 1;
+    //startIndex = position +1;
     String subString = line.substring(startIndex);
     search(subString,pattern,lineNo,startIndex,cursorList);
   }
