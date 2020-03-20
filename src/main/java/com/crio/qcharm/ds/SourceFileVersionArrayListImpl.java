@@ -161,10 +161,10 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   }
  private void search(String line,String pattern,int lineNo,int startIndex,List<Cursor> cursorList){
   if(line.contains(pattern)) {
-    if(line.startsWith(pattern)){
+    //if(line.startsWith(pattern)){
     int position = line.indexOf(pattern);
     Cursor cursor = new Cursor(lineNo,position+startIndex);
-    cursorList.add(cursor);}
+    cursorList.add(cursor);//}
     startIndex = position + pattern.length() + 1;
     //startIndex = startIndex +1;
     String subString = line.substring(1);
