@@ -269,9 +269,7 @@ class SourceFileHandlerArrayListImplTest {
     int N = 100;
     FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
     sourceFileHandlerArrayListImpl.loadFile(fileInfo);
-
     SearchRequest searchRequest = new SearchRequest(0, "lineno", fileName);
-
     List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequest);
     List<Cursor> expected = new ArrayList<>();
 
