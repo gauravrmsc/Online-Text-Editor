@@ -254,7 +254,6 @@ class SourceFileHandlerArrayListImplTest {
     Cursor cursor = new Cursor(20, 13);
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
-
     Cursor expectedCursorPosition = new Cursor(startingLine, 0);
     assertEquals(expectedCursorPosition, page.getCursorAt());
     assertEquals(fileInfo.getLines().subList(startingLine, startingLine + length), page.getLines());
