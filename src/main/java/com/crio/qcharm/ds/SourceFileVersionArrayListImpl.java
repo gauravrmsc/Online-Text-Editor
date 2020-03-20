@@ -13,9 +13,9 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   public SourceFileVersionArrayListImpl(SourceFileVersionArrayListImpl obj) {
     
   }
-  public SourceFileVersionArrayListImpl() {
+ /* public SourceFileVersionArrayListImpl() {
     
-  }
+  }*/
 
 
 
@@ -172,11 +172,11 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   }
   
  }
-  public static void main(String... args){
+  /*public static void main(String... args){
 SourceFileVersionArrayListImpl obj = new SourceFileVersionArrayListImpl();
 List<Cursor> lst = new ArrayList<Cursor>();
 obj.search("GeeksforGeeksforGeeksforGeeks","GeeksforGeeks",0,0,lst);
 System.out.println(lst);
- }
+ }*/
  
 }
