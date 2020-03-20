@@ -49,7 +49,7 @@ class SourceFileVersionLinkedListImplTest {
 
     List<String> linesReceived = SourceFileVersion.getAllLines();
 
-    assertEquals(linesReceived, fileInfo.getLines());
+    assertEquals(fileInfo.getLines(), linesReceived);
   }
 
   @Test
@@ -65,8 +65,8 @@ class SourceFileVersionLinkedListImplTest {
 
     Page linesBefore = SourceFileVersion.getLinesBefore(pageRequest);
 
-    assertEquals(linesBefore.getLines(), fileInfo.getLines().subList(0, 10));
-    assertEquals(linesBefore.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(0, 10), linesBefore.getLines());
+    assertEquals(cursorAt, linesBefore.getCursorAt());
   }
 
   @Test
@@ -81,8 +81,8 @@ class SourceFileVersionLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(0, fileName, 25, cursorAt);
     Page linesBefore = SourceFileVersion.getLinesBefore(pageRequest);
 
-    assertEquals(linesBefore.getLines().size(), 0);
-    assertEquals(linesBefore.getCursorAt(), cursorAt);
+    assertEquals(0, linesBefore.getLines().size());
+    assertEquals(cursorAt, linesBefore.getCursorAt());
   }
 
   @Test
@@ -97,8 +97,8 @@ class SourceFileVersionLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(10, fileName, 25, cursorAt);
     Page linesBefore = SourceFileVersion.getLinesAfter(pageRequest);
 
-    assertEquals(linesBefore.getLines(), fileInfo.getLines().subList(11, 11+25));
-    assertEquals(linesBefore.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(11, 11+25), linesBefore.getLines());
+    assertEquals(cursorAt, linesBefore.getCursorAt());
   }
 
   @Test
@@ -113,8 +113,8 @@ class SourceFileVersionLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(60, fileName, 25, cursorAt);
     Page linesFrom = SourceFileVersion.getLinesFrom(pageRequest);
 
-    assertEquals(linesFrom.getLines(), fileInfo.getLines().subList(60, 73));
-    assertEquals(linesFrom.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(60, 73), linesFrom.getLines());
+    assertEquals(cursorAt, linesFrom.getCursorAt());
   }
 
   @Test
@@ -129,8 +129,8 @@ class SourceFileVersionLinkedListImplTest {
     PageRequest pageRequest = new PageRequest(10, fileName, 25, cursorAt);
     Page linesFrom = SourceFileVersion.getLinesFrom(pageRequest);
 
-    assertEquals(linesFrom.getLines(), fileInfo.getLines().subList(10, 10+25));
-    assertEquals(linesFrom.getCursorAt(), cursorAt);
+    assertEquals(fileInfo.getLines().subList(10, 10+25), linesFrom.getLines());
+    assertEquals(cursorAt, linesFrom.getCursorAt());
   }
 
   @Test
@@ -145,8 +145,8 @@ class SourceFileVersionLinkedListImplTest {
     final SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
     List<Cursor> occurrences = SourceFileVersion.getCursors(searchRequest);
 
-    assertEquals(occurrences.size() , 1);
-    assertEquals(occurrences.get(0), new Cursor(0,0));
+    assertEquals(1, occurrences.size());
+    assertEquals(new Cursor(0, 0), occurrences.get(0));
   }
 
   @Test
@@ -161,7 +161,7 @@ class SourceFileVersionLinkedListImplTest {
     final SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
     List<Cursor> occurrences = SourceFileVersion.getCursors(searchRequest);
 
-    assertEquals(occurrences.size() , 0);
+    assertEquals(0, occurrences.size());
   }
 
   @Test
@@ -176,10 +176,10 @@ class SourceFileVersionLinkedListImplTest {
     final SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
     List<Cursor> occurrences = SourceFileVersion.getCursors(searchRequest);
 
-    assertEquals(occurrences.size() , 3);
-    assertEquals(occurrences.get(0), new Cursor(1,11));
-    assertEquals(occurrences.get(1), new Cursor(2,11));
-    assertEquals(occurrences.get(2), new Cursor(2,15));
+    assertEquals(3, occurrences.size());
+    assertEquals(new Cursor(1,11), occurrences.get(0));
+    assertEquals(new Cursor(2,11), occurrences.get(1));
+    assertEquals(new Cursor(2,15), occurrences.get(2));
   }
 
   @Test
@@ -199,16 +199,18 @@ class SourceFileVersionLinkedListImplTest {
     SourceFileVersion lastOp =
         new SourceFileVersionArrayListImpl(fileInfo);
 
-    assertEquals(lastOp.getAllLines(), fileInfo.getLines());
+
+    assertEquals(fileInfo.getLines(), lastOp.getAllLines());
 
     List<Edits> updateLinesList = new ArrayList<>();
     updateLinesList.add(updateLines);
     lastOp.apply(updateLinesList);
 
     List<String> allLines = lastOp.getAllLines();
-    assertEquals(allLines.get(0), fileInfo.getLines().get(0));
-    assertEquals(allLines.get(1), lines.get(0));
-    assertEquals(allLines.get(2), lines.get(1));
+
+    assertEquals(fileInfo.getLines().get(0), allLines.get(0));
+    assertEquals(lines.get(0), allLines.get(1));
+    assertEquals(lines.get(1), allLines.get(2));
   }
 }
 
