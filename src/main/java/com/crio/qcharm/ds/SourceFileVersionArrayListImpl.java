@@ -161,12 +161,13 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   }
  private void search(String line,String pattern,int lineNo,int startIndex,List<Cursor> cursorList){
   if(line.contains(pattern)) {
+    if(line.startsWith(pattern)){
     int position = line.indexOf(pattern);
     Cursor cursor = new Cursor(lineNo,position+startIndex);
-    cursorList.add(cursor);
+    cursorList.add(cursor);}
     //startIndex = position + pattern.length() + 1;
     startIndex = startIndex +1;
-    String subString = line.substring(startIndex);
+    String subString = line.substring(1);
     search(subString,pattern,lineNo,startIndex,cursorList);
   }
   
@@ -175,6 +176,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
 SourceFileVersionArrayListImpl obj = new SourceFileVersionArrayListImpl();
 List<Cursor> lst = new ArrayList<Cursor>();
 obj.search("GeeksforGeeksforGeeksforGeeks","GeeksforGeeks",0,0,lst);
+System.out.println(lst);
  }
  
 }
