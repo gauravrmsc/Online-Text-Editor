@@ -266,33 +266,6 @@ class QCharmControllerTest {
   }
 
 
-  @Test
-  void testRunProgramWithNoInputParametersPythonTimeouts() throws Exception {
-    String code = "val = input(\"Enter your value: \")\n"
-        + "print(\"hello \"+ val)";
-    RunCodeArgs args = new RunCodeArgs();
-    args.setFileName("SimplePythonCode.py");
-    args.setLanguage("python");
-    args.setLines(Arrays.asList(code));
-    args.setInputs(new String[]{});
-
-    URI uri = UriComponentsBuilder
-        .fromPath(RUN_FILE_URI)
-        .build().toUri();
-
-    System.out.println("URI string = " + uri.toString());
-    String fileInfoString = objectMapper.writeValueAsString(args);
-
-    final MvcResult mvcResult = mvc.perform(post(RUN_FILE_URI)
-        .contentType(MediaType.APPLICATION_JSON).content(fileInfoString)
-        .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
-
-    String content = mvcResult.getResponse().getContentAsString();
-
-    RunCodeOutput output = objectMapper.readValue(content, RunCodeOutput.class);
-
-    assertEquals(output.getOutput(),"Enter your value: \n");
-  }
 
 
   @Test

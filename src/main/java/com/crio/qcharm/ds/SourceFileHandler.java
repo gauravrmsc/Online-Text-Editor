@@ -19,6 +19,8 @@ public interface SourceFileHandler {
 
   Page getLinesFrom(PageRequest pageRequest);
 
+  List<Cursor> search(SearchRequest searchRequest);
+
 
   void editLines(EditRequest editRequest);
 

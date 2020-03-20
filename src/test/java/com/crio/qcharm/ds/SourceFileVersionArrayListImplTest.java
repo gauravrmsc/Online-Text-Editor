@@ -134,6 +134,55 @@ class SourceFileVersionArrayListImplTest {
     assertEquals(cursorAt, linesFrom.getCursorAt());
   }
 
+  @Test
+  void getCursorsWithMatch() {
+    String fileName = "getCursors1";
+    FileInfo fileInfo = getSmallFile(fileName);
+
+    SourceFileVersion SourceFileVersion =
+        new SourceFileVersionArrayListImpl(fileInfo);
+
+    String pattern = "Hello";
+    final SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
+    List<Cursor> occurances = SourceFileVersion.getCursors(searchRequest);
+
+    assertEquals(1, occurances.size());
+    assertEquals(new Cursor(0, 0), occurances.get(0));
+  }
+
+  @Test
+  void getCursorsWithNoMatch() {
+    String fileName = "getCursors2";
+    FileInfo fileInfo = getSmallFile(fileName);
+
+    SourceFileVersion SourceFileVersion =
+        new SourceFileVersionArrayListImpl(fileInfo);
+
+    String pattern = "hello";
+    final SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
+    List<Cursor> occurrences = SourceFileVersion.getCursors(searchRequest);
+
+    assertEquals(0, occurrences.size());
+  }
+
+  @Test
+  void getCursorsWithMultipleMatches() {
+    String fileName = "getCursors3";
+    FileInfo fileInfo = getSmallFile(fileName);
+
+    SourceFileVersion SourceFileVersion =
+        new SourceFileVersionArrayListImpl(fileInfo);
+
+    String pattern = "x";
+    final SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
+    List<Cursor> occurrences = SourceFileVersion.getCursors(searchRequest);
+
+    assertEquals(3, occurrences.size());
+    assertEquals(new Cursor(1,11), occurrences.get(0));
+    assertEquals(new Cursor(2,11), occurrences.get(1));
+    assertEquals(new Cursor(2,15), occurrences.get(2));
+  }
+
 
 
   @Test

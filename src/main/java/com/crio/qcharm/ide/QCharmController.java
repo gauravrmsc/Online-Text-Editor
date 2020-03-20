@@ -72,6 +72,13 @@ public class QCharmController {
     return new ResponseEntity<>(page, HttpStatus.OK);
   }
 
+  @PostMapping("/search_new")
+  @ResponseBody
+  public Object searchNew(@RequestBody MasterRequest masterRequest) {
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+    List<Cursor> cursors = sourceFileHandler.search(masterRequest.getSearchRequest());
+    return new ResponseEntity<>(cursors, HttpStatus.OK);
+  }
 
 
 
