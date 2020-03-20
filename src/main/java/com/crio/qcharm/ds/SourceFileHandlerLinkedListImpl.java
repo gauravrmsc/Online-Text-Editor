@@ -22,24 +22,28 @@ public class SourceFileHandlerLinkedListImpl implements SourceFileHandler {
 
   @Override
   public SourceFileVersion getLatestSourceFileVersion(String fileName) {
-    return latest;
   }
+
 
   @Override
   public Page loadFile(FileInfo fileInfo) {
   }
 
+
   @Override
   public Page getPrevLines(PageRequest pageRequest) {
   }
+
 
   @Override
   public Page getNextLines(PageRequest pageRequest) {
   }
 
+
   @Override
   public Page getLinesFrom(PageRequest pageRequest) {
   }
+
 
   @Override
   public List<Cursor> search(SearchRequest searchRequest) {
@@ -48,27 +52,43 @@ public class SourceFileHandlerLinkedListImpl implements SourceFileHandler {
 
   @Override
   public void setCopyBuffer(CopyBuffer copyBuffer) {
-    this.copyBuffer = copyBuffer;
   }
+
 
   @Override
   public CopyBuffer getCopyBuffer() {
-    CopyBuffer lastCopyBuffer = this.copyBuffer;
-    this.copyBuffer = new CopyBuffer(new LinkedList<>());
-    return lastCopyBuffer;
   }
+
 
   @Override
   public SourceFileVersion cloneObj(SourceFileVersion ver) {
     return new SourceFileVersionLinkedListImpl((SourceFileVersionLinkedListImpl) ver);
   }
 
+
   @Override
   public void editLines(EditRequest editRequest) {
   }
 
+
+  // TODO: CRIO_TASK_MODULE_SEARCH_REPLACE
+  // Input:
+  //      SearchReplaceRequest
+  //        1. pattern  - pattern to be found
+  //        2. newPattern - pattern to be replaced with
+  //        3. fileName
+  // Description:
+  //      using the SourceFileVersionLinkedListImpl object find every occurrence of pattern
+  //      and replace it with the given newPattern
+
   @Override
   public void searchReplace(SearchReplaceRequest searchReplaceRequest) {
   }
+
+
+
+
+
+
 
 }
