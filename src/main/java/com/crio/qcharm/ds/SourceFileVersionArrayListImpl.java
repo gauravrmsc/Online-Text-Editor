@@ -156,7 +156,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
    /* String pattern = searchRequest.getPattern();
     for (int i=0;i<lines.size();i++) {
       search(lines.get(i),pattern,i,0,cursorList);
-    }
+    }*/
     return cursorList;
   }
  private void search(String line,String pattern,int lineNo,int startIndex,List<Cursor> cursorList){
