@@ -153,20 +153,20 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   @Override
   public List<Cursor> getCursors(SearchRequest searchRequest) {
     List<Cursor> cursorList = new ArrayList<Cursor> ();
-   /* String pattern = searchRequest.getPattern();
+    String pattern = searchRequest.getPattern();
     for (int i=0;i<lines.size();i++) {
       search(lines.get(i),pattern,i,0,cursorList);
-    }*/
+    }
     return cursorList;
   }
  private void search(String line,String pattern,int lineNo,int startIndex,List<Cursor> cursorList){
   if(line.contains(pattern)) {
-    //if(line.startsWith(pattern)){
+    if(line.startsWith(pattern)){
     int position = line.indexOf(pattern);
     Cursor cursor = new Cursor(lineNo,position+startIndex);
-    cursorList.add(cursor);//}
-    startIndex = position + pattern.length() + 1;
-    //startIndex = startIndex +1;
+    cursorList.add(cursor);}
+    //startIndex = position + pattern.length() + 1;
+    startIndex = startIndex +1;
     String subString = line.substring(1);
     search(subString,pattern,lineNo,startIndex,cursorList);
   }
