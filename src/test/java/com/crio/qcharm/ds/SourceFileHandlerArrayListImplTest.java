@@ -284,7 +284,7 @@ class SourceFileHandlerArrayListImplTest {
       assertEquals(expectedCursorPositions, cursors);
     }
     System.out.printf("efficientSearchTest timetaken = %d ns\n", timeTakenInNs);
-    assert (timeTakenInNs < 1600000000l);
+    assert (timeTakenInNs < 3000000000l);
   }
 
 
