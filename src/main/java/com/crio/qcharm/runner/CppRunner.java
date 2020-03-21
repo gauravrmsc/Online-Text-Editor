@@ -8,14 +8,18 @@ import java.util.List;
 
 public class CppRunner extends BaseRunner {
 
+  @Override
+  public String extractFileName(List<String> lines) {
+    return "scratch.cpp";
+  }
 
   public RunCodeOutput runProgram(List<String> filesToDelete, String fileName,
       String[] inputs) throws Exception {
     String className = fileName.substring(0, fileName.length() - 4);
     String outFile = className + ".out";
-    String compileProcess = "timeout 5 g++ --std=c++14 -o " + outFile + " " + fileName;
+    String compileProcess = TIMEOUT_5 + "g++ --std=c++14 -o " + outFile + " " + fileName;
     filesToDelete.add(outFile);
-    String runProcess = "timeout 5 ./" + outFile;
+    String runProcess = TIMEOUT_5 + "./" + outFile;
 
     StringBuilder outputBuilder = new StringBuilder();
     outputBuilder.append(callProcess(compileProcess, new String[]{}));

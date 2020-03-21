@@ -9,9 +9,14 @@ import java.util.List;
 public class PythonRunner extends BaseRunner {
 
 
+  @Override
+  public String extractFileName(List<String> lines) {
+    return "scratch.py";
+  }
+
   public RunCodeOutput runProgram(List<String> filesToDelete, String fileName,
       String[] inputs) throws Exception {
-    String runProcess = "timeout 5 python3 " + fileName;
+    String runProcess = TIMEOUT_5 + "python3 " + fileName;
 
     StringBuilder outputBuilder = new StringBuilder();
     outputBuilder.append(callProcess(runProcess, inputs));

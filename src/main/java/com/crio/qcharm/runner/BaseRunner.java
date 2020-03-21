@@ -16,10 +16,12 @@ import java.util.List;
 
 public abstract class BaseRunner {
 
+  public static final String TIMEOUT_5 = "timeout 5 ";
+
+  public abstract String extractFileName(List<String> lines);
 
   public abstract RunCodeOutput runProgram(List<String> filesToDelete, String fileName,
       String[] inputs) throws Exception;
-
 
 
   protected String callProcess(String command, String[] inputs) throws Exception {
