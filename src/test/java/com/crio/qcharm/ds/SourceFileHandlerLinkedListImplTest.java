@@ -13,19 +13,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SourceFileHandlerLinkedListImplTest {
-
+  
   @BeforeEach
   public void setupUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
@@ -268,7 +270,7 @@ class SourceFileHandlerLinkedListImplTest {
     assertEquals(10, page.getStartingLineNo());
   }
 
-  @Test
+  @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
   void  efficientSearchTest() {
     String fileName = "efficientSearchTest";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -289,6 +291,7 @@ class SourceFileHandlerLinkedListImplTest {
 
 
   @Test
+  @Timeout(value=20000, unit= TimeUnit.MILLISECONDS)
   void randomJumpResultsInBadPerformance() {
     String fileName = "jump.txt";
     SourceFileHandler sourceFileHandler = getSourceFileHandlerLinkedList(fileName);
