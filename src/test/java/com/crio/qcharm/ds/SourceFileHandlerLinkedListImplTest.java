@@ -293,16 +293,14 @@ class SourceFileHandlerLinkedListImplTest {
     String fileName = "jump.txt";
     SourceFileHandler sourceFileHandler = getSourceFileHandlerLinkedList(fileName);
 
-    int N = 250000;
+    int N = 10000;
     final FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
     sourceFileHandler.loadFile(fileInfo);
 
     List<Integer> offsets = new LinkedList<>();
 
-    int incr = N / 10000;
     for (int i = 0; i < 10000; ++i) {
-      //offsets.add((int)(Math.random() * N));
-      int idx = i * incr;
+      int idx = (int)(Math.random() * N);
       offsets.add(idx);
     }
 
@@ -323,8 +321,9 @@ class SourceFileHandlerLinkedListImplTest {
         assertEquals(fileInfo.getLines().subList(start, end), page.getLines());
       }
     }
-    System.out.println(timeTakenInNs);
-    assert(timeTakenInNs < 3000000000l);
+    System.out.printf("randomJumpResultsInBadPerformance Test:  Timetaken = %d ns\n",
+        timeTakenInNs);
+    assert(timeTakenInNs < 500 * 1000 * 1000);
   }
 
   @Test
