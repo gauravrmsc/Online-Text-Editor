@@ -13,12 +13,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -270,6 +272,7 @@ class SourceFileHandlerArrayListImplTest {
   }
 
   @Test
+  @Timeout(value=15000, unit = TimeUnit.MILLISECONDS)
   void  efficientSearchTest() {
     String fileName = "efficientSearchTest";
     SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
