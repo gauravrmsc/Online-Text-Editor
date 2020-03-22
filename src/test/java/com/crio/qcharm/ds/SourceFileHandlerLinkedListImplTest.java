@@ -493,7 +493,7 @@ class SourceFileHandlerLinkedListImplTest {
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
 
     int N = 10000;
-    int K = 1000;
+    int K = 10000;
     FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
     sourceFileHandlerLinkedListImpl.loadFile(fileInfo);
 
@@ -508,17 +508,17 @@ class SourceFileHandlerLinkedListImplTest {
     EditRequest editRequest = new EditRequest(0, 0, changedLines, fileName, cursorAt);
     PageRequest pageRequest = new PageRequest(0, fileName, 1, cursorAt);
 
-    long startTime = System.currentTimeMillis();
+    long timeTaken = 0;
     for (int i = 0; i < K; ++i) {
+      long startTime = System.nanoTime();
       sourceFileHandlerLinkedListImpl.editLines(editRequest);
 
       Page pageResponse = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequest);
+      timeTaken += System.nanoTime() - startTime;
       assertEquals(changedLines, pageResponse.getLines());
     }
-    long timeTaken = (System.currentTimeMillis() - startTime);
-
     System.out.println(timeTaken);
-    assert(timeTaken < 1500);
+    assert(timeTaken < 330 * 1000 * 1000);
     PageRequest pageRequestNew = new PageRequest(0, fileName, N + K, cursorAt);
     Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequestNew);
 
