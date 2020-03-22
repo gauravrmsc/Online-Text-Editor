@@ -27,7 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SourceFileHandlerLinkedListImplTest {
-  
+
   @BeforeEach
   public void setupUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler());
@@ -110,6 +110,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void smallFileLoadingReturnsAllLines() {
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList("testfile");
 
@@ -124,6 +125,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void largeFileLoadingReturnsFiftyLinesOfData() {
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList("testfile");
 
@@ -135,6 +137,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getNextLinesReturnsEmptyPageIfThereIsNoLinesAfter() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -154,6 +157,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getNextLinesReturnsLessThanRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -174,6 +178,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getPrevLinesReturnsRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -194,6 +199,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getPrevLinesReturnsEmptyPageIfThereIsNoLinesBefore() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -210,6 +216,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getPrevLinesReturnsLessThanRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -230,6 +237,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getNextLinesReturnsRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -250,6 +258,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void getLinesFromReturnsRequestedNumberOfLines() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -270,7 +279,8 @@ class SourceFileHandlerLinkedListImplTest {
     assertEquals(10, page.getStartingLineNo());
   }
 
-  @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)
+  @Test
+  @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
   void  efficientSearchTest() {
     String fileName = "efficientSearchTest";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -330,6 +340,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void search() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -353,6 +364,7 @@ class SourceFileHandlerLinkedListImplTest {
 
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void editLines() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -381,6 +393,7 @@ class SourceFileHandlerLinkedListImplTest {
 
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void insertLinesAtTop() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -414,6 +427,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void insertLinesAtBottom() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
@@ -447,6 +461,7 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
   @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void randomInsertUpdateDelete() {
     int seed = 0x1231;
     Random random = new Random(seed);
