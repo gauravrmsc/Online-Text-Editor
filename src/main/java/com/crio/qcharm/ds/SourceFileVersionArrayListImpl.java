@@ -12,12 +12,8 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   List<String> lines;
   HashMap<String,List<Cursor>> hm = new HashMap<String,List<Cursor>>();
 
-  public SourceFileVersionArrayListImpl(SourceFileVersionArrayListImpl obj) {
-    
-  }
- /* public SourceFileVersionArrayListImpl() {
-    
-  }*/
+  
+ 
 
 
 
@@ -61,6 +57,92 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   //    numberOfLines - 25
   //    Then lines returned is
   //    (line number 25, line number 26 ... , line number 48, line number49)
+
+
+  public SourceFileVersionArrayListImpl(SourceFileVersionArrayListImpl obj) {
+  }
+
+
+  public SourceFileVersionArrayListImpl() {
+  }
+
+  @Override
+  public SourceFileVersion apply(List<Edits> edits) {
+    List<String> lines = new ArrayList<>();
+    lines.addAll(lines);
+
+    SourceFileVersionArrayListImpl latest = new SourceFileVersionArrayListImpl();
+
+    for (Edits oneEdit : edits) {
+      if (oneEdit instanceof UpdateLines) {
+        apply((UpdateLines) oneEdit);
+      } else {
+        assert(oneEdit instanceof SearchReplace);
+        apply((SearchReplace) oneEdit);
+      }
+    }
+    return this;
+  }
+
+
+  @Override
+  public void apply(SearchReplace searchReplace) {
+  }
+
+
+  // TODO: CRIO_TASK_MODULE_CUT_COPY_PASTE
+  // Input:
+  //     UpdateLines
+  //        1. startingLineNo - starting line number of last time it received page from backend
+  //        2. numberOfLines - number of lines received from backend last time.
+  //        3. lines - present view of lines in range(startingLineNo,startingLineNo+numberOfLines)
+  //        4. cursor
+  // Description:
+  //        1. Remove the line numbers in the range(starting line no, ending line no)
+  //        2. Inserting the lines in new content starting position starting line no
+  // Example:
+  //        UpdateLines looks like this
+  //            1. start line no - 50
+  //            2. numberOfLines - 10
+  //            3. lines - ["Hello world"]
+  //
+  //       Assume the file has 100 lines in it
+  //
+  //       File contents before edit:
+  //       ==========================
+  //       line no 0
+  //       line no 1
+  //       line no 2
+  //          .....
+  //       line no 99
+  //
+  //        File contents After Edit:
+  //        =========================
+  //        line no 0
+  //        line no 1
+  //        line no 2
+  //        line no 3
+  //         .....
+  //        line no 49
+  //        Hello World
+  //        line no 60
+  //        line no 61
+  //          ....
+  //        line no 99
+  //
+
+
+
+  @Override
+  public void apply(UpdateLines updateLines) {
+    List <String> newLines = updateLines.getLines();
+    int start  =updateLines.getStartingLineNo();
+    lines.addAll(start,newLines);
+  }
+
+
+
+  
 
 
   @Override
@@ -255,5 +337,8 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
 return lps;
 }
  
+public Object clone() throws CloneNotSupportedException{
+  return super.clone();
+}
 
 }

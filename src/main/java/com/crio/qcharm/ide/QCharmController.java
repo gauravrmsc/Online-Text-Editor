@@ -80,6 +80,64 @@ public class QCharmController {
     return new ResponseEntity<>(cursors, HttpStatus.OK);
   }
 
+  @PostMapping("/cut_new")
+  @ResponseBody
+  public Object cutNew(@RequestBody MasterRequest masterRequest) {
+
+    final Pair<CopyBuffer, List<String>> buffers = masterRequest.getCopyBuffer();
+    sourceFileHandler.setCopyBuffer(buffers.getKey());
+    EditRequest editRequest = masterRequest.getEditRequest();
+    editRequest.setNewContent(buffers.getValue());
+    sourceFileHandler.editLines(editRequest);
+    final PageRequest pageRequest = masterRequest.getPageRequestPostEdit();
+    final Page page = sourceFileHandler.getLinesFrom(pageRequest);
+    page.setCursorAt(masterRequest.getCursorStart());
+
+    return new ResponseEntity<>(page, HttpStatus.OK);
+  }
+
+  @PostMapping("/copy_new")
+  @ResponseBody
+  public Object copyNew(@RequestBody MasterRequest masterRequest) {
+    final Pair<CopyBuffer, List<String>> buffers = masterRequest.getCopyBuffer();
+
+    CopyBuffer copyBuffer = buffers.getKey();
+    sourceFileHandler.setCopyBuffer(copyBuffer);
+
+    EditRequest editRequest = masterRequest.getEditRequest();
+    sourceFileHandler.editLines(editRequest);
+    final PageRequest pageRequest = masterRequest.getPageRequestPostEdit();
+    final Page page = sourceFileHandler.getLinesFrom(pageRequest);
+    page.setCursorAt(masterRequest.getCursorStart());
+    return new ResponseEntity<>(page, HttpStatus.OK);
+  }
+
+  @PostMapping("/paste_new")
+  @ResponseBody
+  public Object pasteNew(@RequestBody MasterRequest masterRequest) {
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+
+    masterRequest.applyPaste(sourceFileHandler.getCopyBuffer());
+
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+
+    final PageRequest pageRequest = masterRequest.getPageRequestPostEdit();
+    final Page page = sourceFileHandler.getLinesFrom(pageRequest);
+    page.setCursorAt(masterRequest.getCursorStart());
+    System.out.println(page);
+    return new ResponseEntity<>(page, HttpStatus.OK);
+  }
+
+  @PostMapping("/edit_new")
+  @ResponseBody
+  public Object editNew(@RequestBody MasterRequest masterRequest) {
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+    final PageRequest pageRequest = masterRequest.getPageRequestPostEdit();
+    final Page page = sourceFileHandler.getLinesFrom(pageRequest);
+    page.setCursorAt(masterRequest.getCursorStart());
+
+    return new ResponseEntity<>(page, HttpStatus.OK);
+  }
 
 
 

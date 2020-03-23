@@ -22,6 +22,13 @@ public interface SourceFileHandler {
   List<Cursor> search(SearchRequest searchRequest);
 
 
+
+  SourceFileVersion cloneObj(SourceFileVersion ver);
+
+  void setCopyBuffer(CopyBuffer copyBuffer);
+
+  CopyBuffer getCopyBuffer();
+
   void editLines(EditRequest editRequest);
 
 
