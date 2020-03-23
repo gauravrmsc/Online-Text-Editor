@@ -213,11 +213,27 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     return cursorList;
   }
  private void search(String line,String pattern,int lineNo,int startIndex,List<Cursor> cursorList,int[] lps){
+ 
   
-  int i = 0,j=0;
   int lineLen = line.length();
   int patternLen  = pattern.length();
+  if(lineLen<100) {
+    if(line.contains(pattern)) {
+      if(line.startsWith(pattern)){
+      int position = line.indexOf(pattern);
+      Cursor cursor = new Cursor(lineNo,position+startIndex);
+      cursorList.add(cursor);}
+      //startIndex = position + pattern.length() + 1;
+      startIndex = startIndex +1;
+      String subString = line.substring(1);
+      search(subString,pattern,lineNo,startIndex,cursorList,null);
+    }
+    return;
+  }
+  //for (int k = 0;k<lineLen;k++){
+    int i = 0,j=0;
   while (i<lineLen) {
+    
     if (line.charAt(i)==pattern.charAt(j)) {
       j++;
       i++;
@@ -235,7 +251,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
       
     }
   }
-
+  //}
  }
  
  private int[] createLPS (String pattern){
@@ -261,4 +277,5 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
 return lps;
 }
  
+
 }
