@@ -8,8 +8,12 @@ import com.crio.qcharm.request.SearchRequest;
 import com.crio.qcharm.request.UndoRequest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,6 +47,10 @@ class SourceFileHandlerArrayListImplTest {
 
     pattern = prefix.toString() + "aa";
     patternGenerator(prefix.toString() + "ab", pattern);
+  }
+
+  List<String> clone(List<String> lst) {
+    return lst.stream().collect(Collectors.toList());
   }
 
   @AfterAll
@@ -254,11 +262,32 @@ class SourceFileHandlerArrayListImplTest {
     Cursor cursor = new Cursor(20, 13);
     PageRequest pageRequest = new PageRequest(startingLine, fileName, length, cursor);
     Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
+
     Cursor expectedCursorPosition = new Cursor(startingLine, 0);
     assertEquals(expectedCursorPosition, page.getCursorAt());
     assertEquals(fileInfo.getLines().subList(startingLine, startingLine + length), page.getLines());
     assertEquals(10, page.getStartingLineNo());
   }
+
+  @Test
+  void  efficientSearchTest() {
+    String fileName = "efficientSearchTest";
+    SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
+
+    sourceFileHandlerArrayListImpl.loadFile(inefficientSearch);
+    SearchRequest searchRequest = new SearchRequest(0, pattern, fileName);
+    long timeTakenInNs = 0;
+    for (int i = 0; i < 10; ++i) {
+      long startTime = System.nanoTime();
+      List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequest);
+      timeTakenInNs += System.nanoTime() - startTime;
+      assertEquals(expectedCursorPositions, cursors);
+    }
+    System.out.printf("efficientSearchTest timetaken = %d ns\n", timeTakenInNs);
+    assert (timeTakenInNs < 1600000000l);
+  }
+
+
 
 
   @Test
@@ -269,7 +298,9 @@ class SourceFileHandlerArrayListImplTest {
     int N = 100;
     FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
     sourceFileHandlerArrayListImpl.loadFile(fileInfo);
+
     SearchRequest searchRequest = new SearchRequest(0, "lineno", fileName);
+
     List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequest);
     List<Cursor> expected = new ArrayList<>();
 
