@@ -5,7 +5,7 @@ import com.crio.qcharm.request.SearchRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   String fileName;
@@ -38,7 +38,6 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   public SourceFileVersionArrayListImpl(FileInfo fileInfo) {
     this.fileName = fileInfo.fileName;
     this.lines = new ArrayList<String>(fileInfo.lines);
-    
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE
