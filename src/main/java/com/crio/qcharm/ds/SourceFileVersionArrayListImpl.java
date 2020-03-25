@@ -37,7 +37,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
  
   public SourceFileVersionArrayListImpl(FileInfo fileInfo) {
     this.fileName = fileInfo.fileName;
-    this.lines = fileInfo.lines;
+    this.lines = new ArrayList<String>(fileInfo.lines);
   }
 
   // TODO: CRIO_TASK_MODULE_LOAD_FILE

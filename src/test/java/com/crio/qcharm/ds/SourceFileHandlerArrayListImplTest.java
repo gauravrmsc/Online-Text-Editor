@@ -542,7 +542,7 @@ class SourceFileHandlerArrayListImplTest {
     PageRequest pageRequestNew = new PageRequest(0, fileName, N + K, cursorAt);
     Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequestNew);
 
-    assertEquals(fileInfo.getLines().subList(K, K + N), page.getLines().subList(K, K + N));
+    assertEquals(fileInfo.getLines(), page.getLines().subList(K, K + N));
   }
 
 

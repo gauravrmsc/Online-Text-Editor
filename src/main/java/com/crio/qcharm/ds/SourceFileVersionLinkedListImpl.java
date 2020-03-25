@@ -5,6 +5,7 @@ import com.crio.qcharm.request.SearchRequest;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 import java.util.HashMap;
 public class SourceFileVersionLinkedListImpl implements SourceFileVersion {
 List<String> lines;
@@ -26,7 +27,7 @@ HashMap<String,List<Cursor>> hm = new HashMap<String,List<Cursor>>();
 
   SourceFileVersionLinkedListImpl(FileInfo fileInfo) {
     this.fileName = fileInfo.fileName;
-    this.lines = fileInfo.lines;
+    this.lines = new LinkedList<String>(fileInfo.lines);
   }
 
   public SourceFileVersionLinkedListImpl() {

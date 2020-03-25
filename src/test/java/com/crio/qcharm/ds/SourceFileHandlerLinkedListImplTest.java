@@ -333,7 +333,7 @@ class SourceFileHandlerLinkedListImplTest {
         assertEquals(fileInfo.getLines().subList(start, end), page.getLines());
       }
     }
-    System.out.printf("randomJumpResultsInBadPerformance Test:  Timetaken = %d ns\n",
+    System.out.printf("randomJumpResulpage.getLines()tsInBadPerformance Test:  Timetaken = %d ns\n",
         timeTakenInNs);
     assert(timeTakenInNs < 500 * 1000 * 1000);
   }
@@ -539,7 +539,7 @@ class SourceFileHandlerLinkedListImplTest {
     PageRequest pageRequestNew = new PageRequest(0, fileName, N + K, cursorAt);
     Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequestNew);
 
-    assertEquals(fileInfo.getLines().subList(K, K + N), page.getLines().subList(K, K + N));
+    assertEquals(fileInfo.getLines(), page.getLines().subList(K, K + N));
   }
 
 
