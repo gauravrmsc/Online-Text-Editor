@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 public class SourceFileVersionLinkedListImpl implements SourceFileVersion {
 List<String> lines;
 String fileName;
@@ -67,12 +68,16 @@ HashMap<String,List<Cursor>> hm = new HashMap<String,List<Cursor>>();
 
   @Override
   public void apply(SearchReplace searchReplace) {
+    HashSet<Integer> hs = new HashSet<>();
     String pattern = searchReplace.getPattern();
     String newPattern = searchReplace.getNewPattern();   
     SearchRequest searchRequest = new SearchRequest(0,pattern,this.fileName);
     List<Cursor> cursors = getCursors(searchRequest);
     for(Cursor cursor:cursors){
       int lineNo = cursor.getLineNo();
+      if(!hs.add(lineNo)){
+        continue;
+      }
       //int index = cursor.getColumnNo();
        this.lines.set(lineNo,this.lines.get(lineNo).replace(pattern,newPattern));
     }
