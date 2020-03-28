@@ -103,7 +103,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     for(Cursor cursor:cursors){
       int lineNo = cursor.getLineNo();
       //int index = cursor.getColumnNo();
-      hs.add(lineNo);
+      //hs.add(lineNo);
       if(!hs.add(lineNo)){
         continue;
       }
