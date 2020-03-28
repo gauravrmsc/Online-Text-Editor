@@ -4,6 +4,7 @@ import com.crio.qcharm.request.PageRequest;
 import com.crio.qcharm.request.SearchRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -94,6 +95,7 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
 
   @Override
   public void apply(SearchReplace searchReplace) {
+    HashSet<Integer> hs =new HashSet<Integer>();
     String pattern = searchReplace.getPattern();
     String newPattern = searchReplace.getNewPattern();   
     SearchRequest searchRequest = new SearchRequest(0,pattern,this.fileName);
@@ -101,6 +103,10 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
     for(Cursor cursor:cursors){
       int lineNo = cursor.getLineNo();
       //int index = cursor.getColumnNo();
+      hs.add(lineNo);
+      if(hs.contains(lineNo)){
+        continue;
+      }
        this.lines.set(lineNo,this.lines.get(lineNo).replace(pattern,newPattern));
     }
   }
