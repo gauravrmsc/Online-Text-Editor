@@ -285,6 +285,9 @@ public class SourceFileVersionArrayListImpl implements SourceFileVersion {
   public List<Cursor> getCursors(SearchRequest searchRequest) {
     List<Cursor> cursorList = new ArrayList<Cursor> ();
     String pattern = searchRequest.getPattern();
+    if (pattern.equals("")) {
+      return cursorList;
+    }
     int[] lps=createLPS(pattern);
     List<Cursor> resultFromCache = hm.get(pattern);
     if(resultFromCache!=null) {
