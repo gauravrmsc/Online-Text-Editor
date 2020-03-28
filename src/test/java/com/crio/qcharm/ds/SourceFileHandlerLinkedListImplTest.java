@@ -128,6 +128,7 @@ class SourceFileHandlerLinkedListImplTest {
   @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
   void largeFileLoadingReturnsFiftyLinesOfData() {
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList("testfile");
+
     FileInfo fileInfo = getLargeSampleFileInfo("largeFile", 1000000);
     Page page = sourceFileHandlerLinkedListImpl.loadFile(fileInfo);
     assertEquals(fileInfo.getLines().subList(0, 50), page.getLines());
@@ -333,7 +334,7 @@ class SourceFileHandlerLinkedListImplTest {
         assertEquals(fileInfo.getLines().subList(start, end), page.getLines());
       }
     }
-    System.out.printf("randomJumpResulpage.getLines()tsInBadPerformance Test:  Timetaken = %d ns\n",
+    System.out.printf("randomJumpResultsInBadPerformance Test:  Timetaken = %d ns\n",
         timeTakenInNs);
     assert(timeTakenInNs < 500 * 1000 * 1000);
   }
@@ -503,45 +504,148 @@ class SourceFileHandlerLinkedListImplTest {
   }
 
 
+
   @Test
-  @Timeout(value=15000, unit=TimeUnit.MILLISECONDS)
-  void editTotheTopOftheFileShouldBeefficientInLinkedList() {
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void searchReplace() {
     String fileName = "testfile";
     SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
 
-    int N = 10000;
-    int K = 10000;
+    int N = 100;
     FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
     sourceFileHandlerLinkedListImpl.loadFile(fileInfo);
 
-    List<String> changedLines = new LinkedList<>();
-    for (int i = 0; i < 1; ++i) {
-      StringBuffer buffer = new StringBuffer("LINENO");
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "lineno",
+        "LineNumber", fileName);
+
+    sourceFileHandlerLinkedListImpl.searchReplace(searchReplaceRequest);
+
+    List<String> expected = new LinkedList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("LineNumber");
       buffer.append(i);
-      changedLines.add(buffer.toString());
+      expected.add(buffer.toString());
     }
 
-    Cursor cursorAt = new Cursor(0, 0);
-    EditRequest editRequest = new EditRequest(0, 0, changedLines, fileName, cursorAt);
-    PageRequest pageRequest = new PageRequest(0, fileName, 1, cursorAt);
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequest);
 
-    long timeTaken = 0;
-    for (int i = 0; i < K; ++i) {
-      long startTime = System.nanoTime();
-      sourceFileHandlerLinkedListImpl.editLines(editRequest);
-
-      Page pageResponse = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequest);
-      timeTaken += System.nanoTime() - startTime;
-      assertEquals(changedLines, pageResponse.getLines());
-    }
-    System.out.println(timeTaken);
-    assert(timeTaken < 330 * 1000 * 1000);
-    PageRequest pageRequestNew = new PageRequest(0, fileName, N + K, cursorAt);
-    Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequestNew);
-
-    assertEquals(fileInfo.getLines(), page.getLines().subList(K, K + N));
+    assertEquals(expected, page.getLines());
   }
 
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void findAfterSearchReplaceTest1() {
+    String fileName = "testfile";
+    SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
+
+    int N = 100;
+    FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
+    sourceFileHandlerLinkedListImpl.loadFile(fileInfo);
+
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "lineno",
+        "LineNumber", fileName);
+
+    final SearchRequest searchRequestBeforeReplace = new SearchRequest(0, "lineno", fileName);
+    List<Cursor> cursors = sourceFileHandlerLinkedListImpl.search(searchRequestBeforeReplace);
+
+    sourceFileHandlerLinkedListImpl.searchReplace(searchReplaceRequest);
+
+
+    final SearchRequest searchRequestAfterReplace = new SearchRequest(0, "LineNumber", fileName);
+    List<Cursor> cursorsAfterReplace =
+        sourceFileHandlerLinkedListImpl.search(searchRequestAfterReplace);
+
+    assertEquals(cursors, cursorsAfterReplace);
+    List<String> expected = new LinkedList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("LineNumber");
+      buffer.append(i);
+      expected.add(buffer.toString());
+    }
+
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequest);
+
+    assertEquals(expected, page.getLines());
+  }
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void findAfterSearchReplaceTest2() {
+    String fileName = "testfile";
+    SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
+
+    int N = 100;
+    FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
+    sourceFileHandlerLinkedListImpl.loadFile(fileInfo);
+
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "line",
+        "awesome", fileName);
+
+    sourceFileHandlerLinkedListImpl.searchReplace(searchReplaceRequest);
+
+    List<Cursor> expectedPositions = new LinkedList<>();
+    for (int i = 0; i < N; ++i) {
+      expectedPositions.add(new Cursor(i, 7));
+    }
+
+    final SearchRequest searchRequestAfterReplace = new SearchRequest(0, "no", fileName);
+    List<Cursor> cursorsAfterReplace =
+        sourceFileHandlerLinkedListImpl.search(searchRequestAfterReplace);
+
+    assertEquals(expectedPositions, cursorsAfterReplace);
+    List<String> expected = new LinkedList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("awesomeno");
+      buffer.append(i);
+      expected.add(buffer.toString());
+    }
+
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequest);
+
+    assertEquals(expected, page.getLines());
+  }
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void SearchForNonEmptyStringAndReplaceWithEmptyString() {
+    String fileName = "testfile";
+    SourceFileHandlerLinkedListImpl sourceFileHandlerLinkedListImpl = getSourceFileHandlerLinkedList(fileName);
+
+    int N = 100;
+    FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
+    sourceFileHandlerLinkedListImpl.loadFile(fileInfo);
+
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "line",
+        "", fileName);
+
+    sourceFileHandlerLinkedListImpl.searchReplace(searchReplaceRequest);
+
+    List<Cursor> expectedPositions = new LinkedList<>();
+    for (int i = 0; i < N; ++i) {
+      expectedPositions.add(new Cursor(i, 0));
+    }
+
+    final SearchRequest searchRequestAfterReplace = new SearchRequest(0, "no", fileName);
+    List<Cursor> cursorsAfterReplace =
+        sourceFileHandlerLinkedListImpl.search(searchRequestAfterReplace);
+
+    assertEquals(expectedPositions, cursorsAfterReplace);
+    List<String> expected = new LinkedList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("no");
+      buffer.append(i);
+      expected.add(buffer.toString());
+    }
+
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerLinkedListImpl.getLinesFrom(pageRequest);
+
+    assertEquals(expected, page.getLines());
+  }
 
 
 

@@ -57,9 +57,26 @@ HashMap<String,List<Cursor>> hm = new HashMap<String,List<Cursor>>();
   }
 
 
+  // TODO: CRIO_TASK_MODULE_SEARCH_REPLACE
+  // Input:
+  //    SearchReplace
+  //          1. pattern - pattern to be found
+  //          2. newPattern - pattern to be replaced with
+  //  Description:
+  //      Find every occurrence of the pattern and replace it newPattern.
 
   @Override
   public void apply(SearchReplace searchReplace) {
+    String pattern = searchReplace.getPattern();
+    String newPattern = searchReplace.getNewPattern();   
+    SearchRequest searchRequest = new SearchRequest(0,pattern,this.fileName);
+    List<Cursor> cursors = getCursors(searchRequest);
+    for(Cursor cursor:cursors){
+      int lineNo = cursor.getLineNo();
+      //int index = cursor.getColumnNo();
+       this.lines.set(lineNo,this.lines.get(lineNo).replace(pattern,newPattern));
+    }
+
   }
 
   // TODO: CRIO_TASK_MODULE_IMPROVING_EDITS

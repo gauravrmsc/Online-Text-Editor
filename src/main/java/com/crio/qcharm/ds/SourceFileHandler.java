@@ -31,6 +31,7 @@ public interface SourceFileHandler {
 
   void editLines(EditRequest editRequest);
 
+  void searchReplace(SearchReplaceRequest searchReplaceRequest);
 
 
 }

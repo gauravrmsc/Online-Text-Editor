@@ -506,45 +506,148 @@ class SourceFileHandlerArrayListImplTest {
   }
 
 
+
   @Test
   @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
-  void editTotheTopOftheFileIsInefficientInArrayList() {
+  void searchReplace() {
     String fileName = "testfile";
     SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
 
-    int N = 10000;
-    int K = 1000;
+    int N = 100;
     FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
     sourceFileHandlerArrayListImpl.loadFile(fileInfo);
 
-    List<String> changedLines = new ArrayList<>();
-    for (int i = 0; i < 1; ++i) {
-      StringBuffer buffer = new StringBuffer("LINENO");
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "lineno",
+        "LineNumber", fileName);
+
+    sourceFileHandlerArrayListImpl.searchReplace(searchReplaceRequest);
+
+    List<String> expected = new ArrayList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("LineNumber");
       buffer.append(i);
-      changedLines.add(buffer.toString());
+      expected.add(buffer.toString());
     }
 
-    Cursor cursorAt = new Cursor(0, 0);
-    EditRequest editRequest = new EditRequest(0, 0, changedLines, fileName, cursorAt);
-    PageRequest pageRequest = new PageRequest(0, fileName, 1, cursorAt);
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
 
-    long startTime = System.currentTimeMillis();
-    for (int i = 0; i < K; ++i) {
-      sourceFileHandlerArrayListImpl.editLines(editRequest);
-
-      Page pageResponse = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
-      assertEquals(changedLines, pageResponse.getLines());
-    }
-    long timeTaken = (System.currentTimeMillis() - startTime) / 1000;
-
-    System.out.println(timeTaken);
-    assert(timeTaken < 30);
-    PageRequest pageRequestNew = new PageRequest(0, fileName, N + K, cursorAt);
-    Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequestNew);
-
-    assertEquals(fileInfo.getLines(), page.getLines().subList(K, K + N));
+    assertEquals(expected, page.getLines());
   }
 
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void findAfterSearchReplaceTest1() {
+    String fileName = "testfile";
+    SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
+
+    int N = 100;
+    FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
+    sourceFileHandlerArrayListImpl.loadFile(fileInfo);
+
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "lineno",
+        "LineNumber", fileName);
+
+    final SearchRequest searchRequestBeforeReplace = new SearchRequest(0, "lineno", fileName);
+    List<Cursor> cursors = sourceFileHandlerArrayListImpl.search(searchRequestBeforeReplace);
+
+    sourceFileHandlerArrayListImpl.searchReplace(searchReplaceRequest);
+
+
+    final SearchRequest searchRequestAfterReplace = new SearchRequest(0, "LineNumber", fileName);
+    List<Cursor> cursorsAfterReplace =
+        sourceFileHandlerArrayListImpl.search(searchRequestAfterReplace);
+
+    assertEquals(cursors, cursorsAfterReplace);
+    List<String> expected = new ArrayList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("LineNumber");
+      buffer.append(i);
+      expected.add(buffer.toString());
+    }
+
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
+
+    assertEquals(expected, page.getLines());
+  }
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void findAfterSearchReplaceTest2() {
+    String fileName = "testfile";
+    SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
+
+    int N = 100;
+    FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
+    sourceFileHandlerArrayListImpl.loadFile(fileInfo);
+
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "line",
+        "awesome", fileName);
+
+    sourceFileHandlerArrayListImpl.searchReplace(searchReplaceRequest);
+
+    List<Cursor> expectedPositions = new ArrayList<>();
+    for (int i = 0; i < N; ++i) {
+      expectedPositions.add(new Cursor(i, 7));
+    }
+
+    final SearchRequest searchRequestAfterReplace = new SearchRequest(0, "no", fileName);
+    List<Cursor> cursorsAfterReplace =
+        sourceFileHandlerArrayListImpl.search(searchRequestAfterReplace);
+
+    assertEquals(expectedPositions, cursorsAfterReplace);
+    List<String> expected = new ArrayList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("awesomeno");
+      buffer.append(i);
+      expected.add(buffer.toString());
+    }
+
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
+
+    assertEquals(expected, page.getLines());
+  }
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  void SearchForNonEmptyStringAndReplaceWithEmptyString() {
+    String fileName = "testfile";
+    SourceFileHandlerArrayListImpl sourceFileHandlerArrayListImpl = getSourceFileHandlerArrayList(fileName);
+
+    int N = 100;
+    FileInfo fileInfo = getLargeSampleFileInfo(fileName, N);
+    sourceFileHandlerArrayListImpl.loadFile(fileInfo);
+
+    SearchReplaceRequest searchReplaceRequest = new SearchReplaceRequest(0, 0, "line",
+        "", fileName);
+
+    sourceFileHandlerArrayListImpl.searchReplace(searchReplaceRequest);
+
+    List<Cursor> expectedPositions = new ArrayList<>();
+    for (int i = 0; i < N; ++i) {
+      expectedPositions.add(new Cursor(i, 0));
+    }
+
+    final SearchRequest searchRequestAfterReplace = new SearchRequest(0, "no", fileName);
+    List<Cursor> cursorsAfterReplace =
+        sourceFileHandlerArrayListImpl.search(searchRequestAfterReplace);
+
+    assertEquals(expectedPositions, cursorsAfterReplace);
+    List<String> expected = new ArrayList<>();
+    for (int i = 0; i < N; ++i) {
+      StringBuffer buffer = new StringBuffer("no");
+      buffer.append(i);
+      expected.add(buffer.toString());
+    }
+
+    PageRequest pageRequest = new PageRequest(0, fileName, 100, new Cursor(0,0));
+    Page page = sourceFileHandlerArrayListImpl.getLinesFrom(pageRequest);
+
+    assertEquals(expected, page.getLines());
+  }
 
 
 

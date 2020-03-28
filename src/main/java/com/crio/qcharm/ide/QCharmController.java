@@ -139,6 +139,17 @@ public class QCharmController {
     return new ResponseEntity<>(page, HttpStatus.OK);
   }
 
+  @PostMapping("/search_replace_new")
+  @ResponseBody
+  public Object searchReplaceNew(@RequestBody MasterRequest masterRequest) {
+    final SearchReplaceRequest searchReplaceRequest = masterRequest.getSearchReplaceRequest();
+    sourceFileHandler.editLines(masterRequest.getEditRequest());
+    sourceFileHandler.searchReplace(searchReplaceRequest);
+    final PageRequest pageRequestAfterReplace = masterRequest.getPageRequestPostEdit();
+    final Page linesAfterReplace = sourceFileHandler.getLinesFrom(pageRequestAfterReplace);
+
+    return new ResponseEntity<>(linesAfterReplace, HttpStatus.OK);
+  }
 
 
 

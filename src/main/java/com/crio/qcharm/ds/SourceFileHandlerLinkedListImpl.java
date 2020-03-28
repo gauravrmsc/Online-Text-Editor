@@ -251,6 +251,30 @@ public class SourceFileHandlerLinkedListImpl implements SourceFileHandler {
 
 
 
+  // TODO: CRIO_TASK_MODULE_SEARCH_REPLACE
+  // Input:
+  //      SearchReplaceRequest
+  //        1. pattern  - pattern to be found
+  //        2. newPattern - pattern to be replaced with
+  //        3. fileName
+  // Description:
+  //      using the SourceFileVersionLinkedListImpl object find every occurrence of pattern
+  //      and replace it with the given newPattern
+
+  @Override
+  public void searchReplace(SearchReplaceRequest searchReplaceRequest) {
+    int startingLineNo = searchReplaceRequest.getStartingLineNo();
+    int length = searchReplaceRequest.getLength();
+    String pattern  = searchReplaceRequest.getPattern();
+    String newPattern = searchReplaceRequest.getNewPattern();
+    //String fileName = searchReplaceRequest.getFileName();
+    SearchReplace searchReplace = 
+        new SearchReplace(startingLineNo,length,new Cursor(0,0),pattern,newPattern);
+    sourceFileVersionLinkedListImpl.apply(searchReplace);
+  }
+
+
+
 
 
 
